@@ -18,7 +18,7 @@ namespace PrimeiraWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet("GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -30,7 +30,7 @@ namespace PrimeiraWebAPI.Controllers
             .ToArray();
         }
 
-        [HttpGet(Name ="Teste")]
+        [HttpGet("Teste")]
         public string GetSaudacoes()
         {
             return $"{DateTime.Now.ToShortDateString()} - Bem vindo a minha primeira API";
