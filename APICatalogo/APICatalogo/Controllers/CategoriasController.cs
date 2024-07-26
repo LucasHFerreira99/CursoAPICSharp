@@ -21,9 +21,9 @@ namespace APICatalogo.Controllers
         [HttpGet("produtos")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProduto()
         {
-            var categorias = _context.Categorias.Include(p => p.Produtos).AsNoTracking(). ToList();
+            var categorias = _context.Categorias.Include(p => p.Produtos).AsNoTracking().ToList();
 
-            if(categorias is null)
+            if (categorias is null)
             {
                 return NotFound("Categorias com produtos não encontradas...");
             }
@@ -34,33 +34,51 @@ namespace APICatalogo.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
-            var categorias = _context.Categorias.AsNoTracking().ToList();
 
-            if (categorias is null)
+            try
             {
-                return NotFound("Categorias não encontradas...");
+                var categorias = _context.Categorias.AsNoTracking().ToList();
+
+                if (categorias is null)
+                {
+                    return NotFound("Categorias não encontradas...");
+                }
+
+                return categorias;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, 
+                    "Ocorreu um problema ao tratar sua solicitação.");
             }
 
-            return categorias;
         }
 
         [HttpGet("{id:int}", Name = "ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
-            var categoria = _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
-
-            if (categoria == null)
+            try
             {
-                return NotFound("Categoria não encontrada...");
-            }
+                var categoria = _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
 
-            return categoria;
+                if (categoria == null)
+                {
+                    return NotFound($"Categoria com id={id} não encontrada...");
+                }
+
+                return categoria;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Ocorreu um problema ao tratar sua solicitação.");
+            }
         }
 
         [HttpPost]
         public ActionResult Post(Categoria categoria)
         {
-            if(categoria is null)
+            if (categoria is null)
             {
                 return BadRequest();
             }
@@ -74,7 +92,7 @@ namespace APICatalogo.Controllers
         [HttpPut("{id:int}")]
         public ActionResult Put(int id, Categoria categoria)
         {
-            if(id != categoria.CategoriaId)
+            if (id != categoria.CategoriaId)
             {
                 return BadRequest();
             }
@@ -89,15 +107,15 @@ namespace APICatalogo.Controllers
         {
             var categoria = _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
 
-            if(categoria is null)
+            if (categoria is null)
             {
-                return NotFound("Categoria não encontrada...");
+                return NotFound($"Categoria com id={id} não encontrada...");
             }
 
-            _context.Categorias.Remove(categoria); 
+            _context.Categorias.Remove(categoria);
             _context.SaveChanges();
 
-            return Ok(categoria); 
+            return Ok(categoria);
         }
     }
 }
