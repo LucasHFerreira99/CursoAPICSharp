@@ -1,5 +1,6 @@
 using APICatalogo.Data;
 using APICatalogo.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json.Serialization;
@@ -24,6 +25,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ServerVersion.AutoDetect(mySqlConnection)));
 
 builder.Services.AddTransient<IMeuServico, MeuServico>();
+
+//Desabilita a utilização implicita do FromServices
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.DisableImplicitFromServicesParameters = true;
+});
 
 var app = builder.Build();
 
