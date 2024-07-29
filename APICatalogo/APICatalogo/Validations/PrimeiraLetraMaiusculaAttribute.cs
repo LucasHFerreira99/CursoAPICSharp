@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace APICatalogo.Validation
+namespace APICatalogo.Validations
 {
     public class PrimeiraLetraMaiusculaAttribute : ValidationAttribute
     {
