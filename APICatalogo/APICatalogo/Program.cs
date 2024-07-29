@@ -1,4 +1,5 @@
 using APICatalogo.Data;
+using APICatalogo.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json.Serialization;
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(mySqlConnection,
     ServerVersion.AutoDetect(mySqlConnection)));
 
+builder.Services.AddTransient<IMeuServico, MeuServico>();
 
 var app = builder.Build();
 
