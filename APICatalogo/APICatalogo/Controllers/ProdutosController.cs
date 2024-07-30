@@ -2,6 +2,7 @@
 using APICatalogo.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers
@@ -32,6 +33,9 @@ namespace APICatalogo.Controllers
         [HttpGet("{id:int}", Name ="ObterProduto")]
         public async Task<ActionResult<Produto>> Get(int id)
         {
+
+            throw new Exception("Exceção ao retornar o produto pelo ID");
+
             var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.ProdutoId == id);
 
             if(produto == null)
