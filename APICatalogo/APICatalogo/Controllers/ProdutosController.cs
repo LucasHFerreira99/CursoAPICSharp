@@ -34,8 +34,7 @@ namespace APICatalogo.Controllers
         public async Task<ActionResult<Produto>> Get(int id)
         {
 
-            throw new Exception("Exceção ao retornar o produto pelo ID");
-
+            //throw new Exception("Exceção ao retornar o produto pelo ID");
             var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.ProdutoId == id);
 
             if(produto == null)
