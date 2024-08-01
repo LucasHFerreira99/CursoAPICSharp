@@ -14,11 +14,11 @@ namespace APICatalogo.Controllers
     public class CategoriasController : ControllerBase
     {
 
-        private readonly ICategoriaRepository _repository;
+        private readonly IRepository<Categoria> _repository;
 
 
         private readonly ILogger _logger;
-        public CategoriasController(ICategoriaRepository repository, ILogger<CategoriasController> logger)
+        public CategoriasController(IRepository<Categoria> repository, ILogger<CategoriasController> logger)
         {
             _repository = repository;
             _logger = logger;
@@ -56,14 +56,14 @@ namespace APICatalogo.Controllers
         public ActionResult<IEnumerable<Categoria>> Get()
         {
             _logger.LogInformation("=================== GET api/categorias ===================");
-            var categorias = _repository.GetCategorias();
+            var categorias = _repository.GetAll();
             return Ok(categorias);
         }
 
         [HttpGet("{id:int}", Name = "ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
-            var categoria = _repository.GetCetegoria(id);
+            var categoria = _repository.Get(c => c.CategoriaId == id);
             if (categoria == null)
             {
                 _logger.LogInformation($"=================== GET api/categorias/id = {id} NOT FOUND  ===================");
@@ -104,7 +104,7 @@ namespace APICatalogo.Controllers
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
-            var categoria = _repository.GetCetegoria(id);
+            var categoria = _repository.Get(c => c.CategoriaId == id);
 
             if (categoria is null)
             {
@@ -112,7 +112,7 @@ namespace APICatalogo.Controllers
                 return NotFound($"Categoria com id={id} não encontrada...");
             }
 
-            var categoriaExcluida = _repository.Delete(id);
+            var categoriaExcluida = _repository.Delete(categoria);
             return Ok(categoriaExcluida);
         }
     }
