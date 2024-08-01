@@ -19,7 +19,7 @@ namespace APICatalogo.Repositories
             return _context.Produtos.ToList();
         }
 
-        public Produto Get(int id)
+        public Produto GetProduto(int id)
         {
 
             var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
