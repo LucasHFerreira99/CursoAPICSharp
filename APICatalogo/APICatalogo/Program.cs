@@ -2,6 +2,7 @@ using APICatalogo.Data;
 using APICatalogo.Extensions;
 using APICatalogo.Filters;
 using APICatalogo.Logging;
+using APICatalogo.Repositories;
 using APICatalogo.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 builder.Services.AddScoped<ApiLoggingFilter>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
 builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
 {
