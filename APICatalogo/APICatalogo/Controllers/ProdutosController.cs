@@ -22,7 +22,7 @@ namespace APICatalogo.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Produto>> Get()
         {
-            var produtos = _repository.GetProdutos();
+            var produtos = _repository.GetProdutos().ToList();
             if (produtos is null)
             {
                 return NotFound("Produtos não encontrados...");
@@ -65,20 +65,30 @@ namespace APICatalogo.Controllers
             }
             var produtoAlterado = _repository.Update(produto);
 
-            return Ok(produtoAlterado);
+            if (produtoAlterado)
+            {
+                return Ok(produto);
+            }
+            else
+            {
+                return StatusCode(500, $"Falha ao atualizado o produto de id =  {id}");
+            }
+                
         }
 
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
             var produtoDeletado = _repository.Delete(id);
-            //var produto = _context.Produtos.Find(id);
-            if(produtoDeletado is true)
-            {
-                return NotFound("Produto não localizado...");
-            }
 
-            return Ok(produtoDeletado);
+            if (produtoDeletado)
+            {
+                return Ok($"Produto de id = {id} foi deletado com sucesso!");
+            }
+            else
+            {
+                return StatusCode(500, $"Falha ao deletar o produto de id =  {id}");
+            }
 
         }
     }
