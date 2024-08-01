@@ -4,11 +4,11 @@ namespace APICatalogo.Repositories
 {
     public interface IProdutoRepository
     {
-        IEnumerable<Produto> GetProdutos();
+        IQueryable<Produto> GetProdutos();
         Produto GetProduto(int id);
         Produto Create(Produto produto);
-        Produto Update(Produto produto);
-        Produto Delete(int id);
+        bool Update(Produto produto);
+        bool Delete(int id);
 
     }
 }

@@ -73,7 +73,7 @@ namespace APICatalogo.Controllers
         {
             var produtoDeletado = _repository.Delete(id);
             //var produto = _context.Produtos.Find(id);
-            if(produtoDeletado is null)
+            if(produtoDeletado is true)
             {
                 return NotFound("Produto não localizado...");
             }
