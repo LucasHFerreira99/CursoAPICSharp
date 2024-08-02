@@ -41,7 +41,24 @@ namespace APICatalogo.Controllers
         {
             _logger.LogInformation("=================== GET api/categorias ===================");
             var categorias = _uof.CategoriaRepository.GetAll();
-            return Ok(categorias);
+
+            if (categorias is null)
+                return NotFound("Não existem categorias...");
+
+            var categoriasDto = new List<CategoriaDTO>();
+
+            foreach(var categoria in categorias)
+            {
+                var categoriaDto = new CategoriaDTO()
+                {
+                    CategoriaId = categoria.CategoriaId,
+                    Nome = categoria.Nome,
+                    ImagemUrl = categoria.ImagemUrl
+                };
+                categoriasDto.Add(categoriaDto);
+            }
+
+            return Ok(categoriasDto);
         }
 
         [HttpGet("{id:int}", Name = "ObterCategoria")]
