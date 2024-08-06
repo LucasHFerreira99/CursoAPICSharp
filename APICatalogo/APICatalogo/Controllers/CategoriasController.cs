@@ -38,11 +38,8 @@ namespace APICatalogo.Controllers
             return meuServico.Saudacao(nome);
         }
 
-        [HttpGet("Pagination")]
-        public ActionResult<IEnumerable<CategoriaDTO>> Get([FromQuery] CategoriasParameters categoriasParameters)
+        private ActionResult<IEnumerable<CategoriaDTO>> ObterCategorias(PagedList<Categoria> categorias)
         {
-            var categorias = _uof.CategoriaRepository.GetCategorias(categoriasParameters);
-
             var metadata = new
             {
                 categorias.TotalCount,
@@ -58,6 +55,21 @@ namespace APICatalogo.Controllers
             var categoriasDto = categorias.ToCategoriaDTOList();
 
             return Ok(categoriasDto);
+        }
+
+        [HttpGet("Pagination")]
+        public ActionResult<IEnumerable<CategoriaDTO>> Get([FromQuery] CategoriasParameters categoriasParameters)
+        {
+            var categorias = _uof.CategoriaRepository.GetCategorias(categoriasParameters);
+
+            return ObterCategorias(categorias);
+        }
+
+        [HttpGet("filter/nome/pagination")]
+        public ActionResult<IEnumerable<CategoriaDTO>> GetCategoriasFiltroNome([FromQuery] CategoriasFiltroNome categoriasParameters)
+        {
+            var categorias = _uof.CategoriaRepository.GetCategoriasFiltroNome(categoriasParameters);
+            return ObterCategorias(categorias);
         }
 
 

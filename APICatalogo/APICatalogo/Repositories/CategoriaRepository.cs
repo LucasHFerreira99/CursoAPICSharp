@@ -18,5 +18,16 @@ public class CategoriaRepository : Repository<Categoria>, ICategoriaRepository
         return categoriasOrdernadas;
     }
 
+    public PagedList<Categoria> GetCategoriasFiltroNome(CategoriasFiltroNome categoriasParams)
+    {
+        var categorias = GetAll().AsQueryable();
 
+        if (!string.IsNullOrEmpty(categoriasParams.Nome))
+        {
+            categorias = categorias.Where(c => c.Nome.IndexOf(categoriasParams.Nome, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        var categoriasFiltradas = PagedList<Categoria>.ToPagedList(categorias, categoriasParams.PageNumber, categoriasParams.PageSize);
+        return categoriasFiltradas;
+    }
 }
