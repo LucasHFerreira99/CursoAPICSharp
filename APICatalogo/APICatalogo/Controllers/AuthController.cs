@@ -1,6 +1,7 @@
 ﻿using APICatalogo.DTOs;
 using APICatalogo.Models;
 using APICatalogo.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -118,7 +119,7 @@ namespace APICatalogo.Controllers
 
             if(principal == null)
             {
-                return BadRequest("Invalid acess token/refres token");
+                return BadRequest("Invalid access token/refres token");
             }
 
             string username = principal.Identity.Name; 
@@ -127,7 +128,7 @@ namespace APICatalogo.Controllers
 
             if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                return BadRequest("Invalid acess token/refresh token");
+                return BadRequest("Invalid access token/refresh token");
             }
 
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims.ToList(), _configuration);
@@ -143,5 +144,21 @@ namespace APICatalogo.Controllers
                 refreshToken = newRefreshToken
             });
         }
+
+        [Authorize]
+        [HttpPost]
+        [Route("revoke/{username}")]
+        public async Task<IActionResult> Revoke (string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null) return BadRequest("Invalid user name");
+
+            user.RefreshToken = null;
+
+            await _userManager.UpdateAsync(user);
+            return NoContent();
+        }
+
     }
 }
