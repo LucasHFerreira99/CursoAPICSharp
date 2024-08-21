@@ -7,6 +7,7 @@ using APICatalogo.Pagination;
 using APICatalogo.Repositories;
 using APICatalogo.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ using X.PagedList;
 
 namespace APICatalogo.Controllers;
 
+[EnableCors("OrigensComAcessoPermitido")]
 [Route("[controller]")]
 [ApiController]
 public class CategoriasController : ControllerBase
@@ -78,7 +80,7 @@ public class CategoriasController : ControllerBase
 
     [HttpGet]
     [ServiceFilter(typeof(ApiLoggingFilter))]
-    [Authorize(Policy="UserOnly")]
+    //[Authorize(Policy="UserOnly")]
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
     {
         _logger.LogInformation("=================== GET api/categorias ===================");
@@ -91,6 +93,7 @@ public class CategoriasController : ControllerBase
         return Ok(categoriasDto);
     }
 
+    [DisableCors]
     [HttpGet("{id:int}", Name = "ObterCategoria")]
     public async Task<ActionResult<CategoriaDTO>> Get(int id)
     {
