@@ -32,12 +32,16 @@ builder.Services.AddControllers(options =>
 var OrigensComAcessoPermitido = "_origensComAcessoPermitido";
 
 builder.Services.AddCors(options =>
-    options.AddPolicy(name: OrigensComAcessoPermitido,
+{
+    options.AddPolicy(OrigensComAcessoPermitido,
     policy =>
     {
-        policy.WithOrigins("http://www.apirequest.io");
-    })
-);
+        policy.WithOrigins("https://apirequest.io", "https://meusite.com")
+        .WithMethods("GET", "POST")
+        .AllowAnyHeader()
+        .AllowCredentials();
+    });
+});
 
 
 
@@ -164,6 +168,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(OrigensComAcessoPermitido);
+//app.UseCors();
 
 app.UseAuthorization();
 
