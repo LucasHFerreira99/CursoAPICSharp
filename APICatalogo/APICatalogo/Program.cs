@@ -4,6 +4,7 @@ using APICatalogo.Extensions;
 using APICatalogo.Filters;
 using APICatalogo.Logging;
 using APICatalogo.Models;
+using APICatalogo.RateLimitOptions;
 using APICatalogo.Repositories;
 using APICatalogo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -156,18 +157,24 @@ builder.Services.AddTransient<IMeuServico, MeuServico>();
 //    options.DisableImplicitFromServicesParameters = true;
 //});
 
-builder.Services.AddRateLimiter(rateLimitOptions =>
+
+var myOptions = new MyRateLimitOptions();
+
+builder.Configuration.GetSection(MyRateLimitOptions.MyRateLimit).Bind(myOptions);
+
+
+
+builder.Services.AddRateLimiter(rateLimiterOptions =>
 {
-    rateLimitOptions.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
+    rateLimiterOptions.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
     {
-        options.PermitLimit = 1;
-        options.Window = TimeSpan.FromSeconds(5);
-        options.QueueLimit = 2;
+        options.PermitLimit = myOptions.PermitLimit;//1;
+        options.Window = TimeSpan.FromSeconds(myOptions.Window);
+        options.QueueLimit = myOptions.QueueLimit;//2;
         options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
-    rateLimitOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
-
 
 builder.Services.AddRateLimiter(options =>
 {
