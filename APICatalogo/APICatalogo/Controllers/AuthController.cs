@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace APICatalogo.Controllers;
 
@@ -35,6 +36,9 @@ public class AuthController : ControllerBase
     [HttpPost]
     [Authorize(Policy = "SuperAdminOnly")]
     [Route("CreateRole")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response), StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> CreateRole(string roleName)
     {
         var roleExist = await _roleManager.RoleExistsAsync(roleName);
@@ -73,6 +77,9 @@ public class AuthController : ControllerBase
     [HttpPost]
     [Authorize(Policy = "SuperAdminOnly")]
     [Route("AddUserToRole")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response), StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> AddUserToRole(string email, string roleName)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -104,6 +111,13 @@ public class AuthController : ControllerBase
         return BadRequest(new { error = "Unable to find user" });
     }
 
+
+    /// <summary>
+    /// Verifica as credenciais de um usuario
+    /// </summary>
+    /// <param name="model">Um objeto do tipo UsuarioDTO</param>
+    /// <returns>Status 200 e o token para o cliente</returns>
+    /// <remarks>Retorna um Status 200 e o token</remarks>
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -154,8 +168,16 @@ public class AuthController : ControllerBase
         //return Forbid();
     }
 
+    /// <summary>
+    /// Regista um novo usuário
+    /// </summary>
+    /// <param name="model">Um objeto UsuarioDTO</param>
+    /// <returns>Retorna o Status 200</returns>
     [HttpPost]
     [Route("register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response), StatusCodes.Status500InternalServerError)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         var userExists = await _userManager.FindByNameAsync(model.Username!);
@@ -237,6 +259,9 @@ public class AuthController : ControllerBase
     [Authorize(Policy = "ExclusiveOnly")]
     [HttpPost]
     [Route("revoke/{username}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> Revoke(string username)
     {
         var user = await _userManager.FindByNameAsync(username);
