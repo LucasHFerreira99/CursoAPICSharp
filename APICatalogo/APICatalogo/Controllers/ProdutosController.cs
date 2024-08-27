@@ -86,14 +86,20 @@ namespace APICatalogo.Controllers
         [ProducesDefaultResponseType]
         public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get()
         {
-            var produtos =await _uof.ProdutoRepository.GetAllAsync();
-            if (produtos is null)
+            try
             {
-                return NotFound("Produtos não encontrados...");
-            }
+                var produtos = await _uof.ProdutoRepository.GetAllAsync();
+                if (produtos is null)
+                {
+                    return NotFound("Produtos não encontrados...");
+                }
 
-            var produtosDTo = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
-            return Ok(produtosDTo);
+                var produtosDTo = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
+                return Ok(produtosDTo);
+            }catch (Exception ex)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -105,6 +111,10 @@ namespace APICatalogo.Controllers
         public async Task<ActionResult<ProdutoDTO>> Get(int id)
         {
 
+            if(id == null || id < 0)
+            {
+                return BadRequest("ID de produto invalido");
+            }
             //throw new Exception("Exceção ao retornar o produto pelo ID");
             var produto = await _uof.ProdutoRepository.GetAsync(p => p.ProdutoId == id);
             if (produto == null)
